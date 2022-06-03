@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - "postgres:/data/postgres"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=dev_db
+    ports:
+      - 5432:5432
+
+  api:
+    build: .
+    volumes:
+      - ./backend:/django
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    links:
+      - db:db
+    env_file:
+      - ./.env
+
+volumes:
+  postgres:
